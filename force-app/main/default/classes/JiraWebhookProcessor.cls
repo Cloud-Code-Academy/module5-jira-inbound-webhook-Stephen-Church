@@ -1,15 +1,3 @@
-/**
- * @description Processor for Jira webhooks
- * Handles issue and project events from Jira
- * 
- * STUDENT TASK:
- * Implement the IWebhookProcessor interface to handle Jira webhook events
- * You'll need to process various events like issue/project creation, updates, and deletions
- * 
- * IMPORTANT NOTE: without sharing is used to avoid sharing issues with the Jira_Issue__c and Jira_Project__c objects but it is not a good practice
- * 
- * @author Student Name
- */
 public without sharing class JiraWebhookProcessor implements IWebhookProcessor {
     
     // Constants for webhook event types
@@ -20,233 +8,165 @@ public without sharing class JiraWebhookProcessor implements IWebhookProcessor {
     private static final String EVENT_PROJECT_UPDATED = 'project_updated';
     private static final String EVENT_PROJECT_DELETED = 'project_deleted';
     
-    /**
-     * @description Validates the incoming Jira webhook request
-     * @param request The REST request containing the webhook payload
-     * @return Boolean True if the request is valid, false otherwise
-     * 
-     * STUDENT TASK:
-     * Implement validation logic for Jira webhooks
-     * - Check for valid JSON by deserializing the request body
-     * - Verify the 'webhookEvent' field exists in the payload
-     * - You can add further validation like checking for specific headers
-     * - Return true if valid, false otherwise
-     * 
-     * HINT:
-     * 1. Use try-catch to handle JSON deserialization errors
-     * 2. Cast the deserialized JSON to Map<String, Object>
-     * 3. Check if required keys exist using containsKey()
-     * 4. Example: if (!payload.containsKey('webhookEvent')) { return false; }
-     */
     public Boolean validate(RestRequest request) {
-        try {
-            // TODO: Implement validation logic
-            // Example:
-            // String requestBody = request.requestBody.toString();
-            // Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(requestBody);
-            // if (!payload.containsKey('webhookEvent')) {
-            //     return false;
-            // }
-            // return true;
-            
-            return false; // Replace with your implementation
-        } catch (Exception e) {
-            // Log the error and return false
-            System.debug(LoggingLevel.ERROR, 'Error validating webhook: ' + e.getMessage());
-            return false;
-        }
-    }
-    
-    /**
-     * @description Processes the Jira webhook request
-     * @param request The REST request containing the webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement the main processing logic
-     * - Parse the JSON payload from the request body
-     * - Extract the 'webhookEvent' field to determine the event type
-     * - Call the appropriate handler method based on the event type
-     * 
-     * HINT:
-     * 1. Use JSON.deserializeUntyped() to convert the request body to a Map
-     * 2. Extract the event type: String webhookEvent = (String) payload.get('webhookEvent');
-     * 3. Use if/else or switch statements to call the appropriate handler
-     * 4. Example: if (webhookEvent == EVENT_ISSUE_CREATED) { processIssueCreated(payload); }
-     */
-    public void process(RestRequest request) {
-        try {
-            // TODO: Implement webhook processing logic
-            // Example:
-            // String requestBody = request.requestBody.toString();
-            // Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(requestBody);
-            // String webhookEvent = (String) payload.get('webhookEvent');
-            // 
-            // if (webhookEvent == EVENT_ISSUE_CREATED) {
-            //     processIssueCreated(payload);
-            // } else if (webhookEvent == EVENT_ISSUE_UPDATED) {
-            //     processIssueUpdated(payload);
-            // } // ... and so on for other event types
-            
-        } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Error processing webhook: ' + e.getMessage());
-            throw e; // Re-throw to let the caller handle it
-        }
-    }
-    
-    /**
-     * @description Process an issue_created event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Use this example as a template for other event handlers
-     */
-    private void processIssueCreated(Map<String, Object> payload) {
-        try {
-            // Example implementation:
-            
-            // 1. Extract issue data from the payload
-            Map<String, Object> issueData = (Map<String, Object>) payload.get('issue');
-            
-            // 2. Create a new Jira_Issue__c record using the helper method
-            Jira_Issue__c newIssue = createIssueRecord(issueData);
-            
-            // 3. Insert the new record
-            insert newIssue;
-            
-            // 4. Log success
-            System.debug('Created Jira issue record: ' + newIssue.Id);
-            
-        } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Error processing issue_created event: ' + e.getMessage());
-            throw e;
-        }
-    }
-    
-    /**
-     * @description Process an issue_updated event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement logic to update an existing Jira_Issue__c record
-     * If the record doesn't exist, create it
-     */
-    private void processIssueUpdated(Map<String, Object> payload) {
-        // TODO: Implement issue update logic
-    }
-    
-    /**
-     * @description Process an issue_deleted event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement logic to delete a Jira_Issue__c record
-     */
-    private void processIssueDeleted(Map<String, Object> payload) {
-        // TODO: Implement issue deletion logic
-    }
-    
-    /**
-     * @description Process a project_created event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement logic to create a Jira_Project__c record
-     */
-    private void processProjectCreated(Map<String, Object> payload) {
-        // TODO: Implement project creation logic
-    }
-    
-    /**
-     * @description Process a project_updated event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement logic to update an existing Jira_Project__c record
-     * If the record doesn't exist, create it
-     */
-    private void processProjectUpdated(Map<String, Object> payload) {
-        // TODO: Implement project update logic
-    }
-    
-    /**
-     * @description Process a project_deleted event
-     * @param payload The webhook payload
-     * 
-     * STUDENT TASK:
-     * Implement logic to delete a Jira_Project__c record
-     */
-    private void processProjectDeleted(Map<String, Object> payload) {
-        // TODO: Implement project deletion logic
-    }
-    
-    /**
-     * @description Create a Jira_Issue__c record from issue data
-     * @param issueData The issue data from the webhook
-     * @return Jira_Issue__c The newly created issue record
-     * 
-     * STUDENT TASK:
-     * Implement logic to extract issue fields and create a record
-     * 
-     * HINT:
-     * 1. Extract data from the issueData map (key, summary, status, etc.)
-     * 2. Map the fields to a new Jira_Issue__c record
-     */
-    private Jira_Issue__c createIssueRecord(Map<String, Object> issueData) {
-        // TODO: Implement issue record creation logic
-        // Example (incomplete - add other fields as needed):
-        // String issueKey = (String) issueData.get('key');
-        // Map<String, Object> fields = (Map<String, Object>) issueData.get('fields');
-        // String summary = (String) fields.get('summary');
-        // 
-        // Jira_Issue__c issue = new Jira_Issue__c(
-        //     Issue_Key__c = issueKey,
-        //     Summary__c = summary
-        //     // Add other fields as needed
-        // );
-        // 
-        // return issue;
         
-        return new Jira_Issue__c();
+        Boolean validated = false;
+
+        String requestBody = request.requestBody.toString();
+        Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(requestBody);
+        if (payload.containsKey('webhookEvent')) {
+            validated = true;
+        }
+        return validated;
     }
     
-    /**
-     * @description Update a Jira_Issue__c record from issue data
-     * @param existingIssue The existing issue record
-     * @param issueData The updated issue data from the webhook
-     * @return Jira_Issue__c The updated issue record
-     * 
-     * STUDENT TASK:
-     * Implement logic to extract issue fields and update a record
-     */
-    private Jira_Issue__c updateIssueRecord(Jira_Issue__c existingIssue, Map<String, Object> issueData) {
-        // TODO: Implement issue record update logic
-        return existingIssue;
+    public void process(RestRequest request) {
+
+        String requestBody = request.requestBody.toString();
+        Map<String, Object> payload = (Map<String, Object>) JSON.deserializeUntyped(requestBody);
+        String webhookEvent = (String) payload.get('webhookEvent');
+
+
+        if (webhookEvent == EVENT_ISSUE_CREATED) {
+            processIssueCreated(payload);
+        } else if (webhookEvent == EVENT_ISSUE_UPDATED) {
+            processIssueUpdated(payload);
+        } else if (webhookEvent == EVENT_ISSUE_DELETED) {
+            processIssueDeleted(payload);
+        } else if (webhookEvent == EVENT_PROJECT_CREATED) {
+            processProjectCreated(payload);
+        } else if (webhookEvent == EVENT_PROJECT_UPDATED) {
+            processProjectUpdated(payload);
+        } else if (webhookEvent == EVENT_PROJECT_DELETED) {
+            processProjectDeleted(payload);   
+        }
+    }
+    //***** JIRA ISSUE METHODS *****/
+
+    private Id getExistingJiraIssueId(String issueKey) {
+
+        Id jiraIssueId = null;
+        List<Jira_Issue__c> jiraIssues = [SELECT Id FROM Jira_Issue__c WHERE Issue_Key__c = :issueKey LIMIT 1];
+        if (!jiraIssues.isEmpty()) {
+            jiraIssueId = jiraIssues.get(0).Id;
+        }
+        return jiraIssueId;
     }
     
-    /**
-     * @description Create a Jira_Project__c record from project data
-     * @param projectData The project data from the webhook
-     * @return Jira_Project__c The newly created project record
-     * 
-     * STUDENT TASK:
-     * Implement logic to extract project fields and create a record
-     */
-    private Jira_Project__c createProjectRecord(Map<String, Object> projectData) {
-        // TODO: Implement project record creation logic
-        return new Jira_Project__c();
+    private Jira_Issue__c mapIssuePayloadToRecord(Map<String, Object> payload, Boolean isCreate) {
+
+        // Extract the needed maps from the payload
+        Map<String, Object> issueData = (Map<String, Object>) payload.get('issue');
+        Map<String, Object> fields = (Map<String, Object>) issueData.get('fields');
+        Map<String, Object> project = (Map<String, Object>) fields.get('project'); 
+        Map<String, Object> status = (Map<String, Object>) fields.get('status'); 
+        Map<String, Object> issueType = (Map<String, Object>) fields.get('issuetype'); 
+        DateTime jiraTimeStampForSf = convertTimestampField(payload);
+
+        // Map the fields that could apply for both a create and update. At a minimum, Last_Updated__c will always have changed
+        Jira_Issue__c issue = new Jira_Issue__c(
+            Name = (String)issueData.get('key'),
+            Issue_Type__c = (String)issueType.get('name'),
+            Project_Key__c = (String)project.get('key'),
+            Status__c = (String)status.get('name'),      
+            Description__c = (String)fields.get('description'),   
+            Summary__c = (String)fields.get('summary'),
+            Last_Updated__c = jiraTimeStampForSf
+        );
+
+        // Extract the Jira Key and map this and the Id for a create. For an update, try to find the existing SF Id with that Jira Key.
+        String issueKey = (String)issueData.get('key');
+        if (isCreate) {
+            issue.Issue_Id__c = (String)issueData.get('id');
+            issue.Issue_Key__c = issueKey;
+        } else {
+            issue.Id = getExistingJiraIssueId(issueKey);
+        }
+        return issue;
     }
     
-    /**
-     * @description Update a Jira_Project__c record from project data
-     * @param existingProject The existing project record
-     * @param projectData The updated project data from the webhook
-     * @return Jira_Project__c The updated project record
-     * 
-     * STUDENT TASK:
-     * Implement logic to extract project fields and update a record
-     */
-    private Jira_Project__c updateProjectRecord(Jira_Project__c existingProject, Map<String, Object> projectData) {
-        // TODO: Implement project record update logic
-        return existingProject;
+    private void processIssueCreated(Map<String, Object> payload) {
+
+        Jira_Issue__c issue = mapIssuePayloadToRecord(payload, true);
+        insert issue;
+    }  
+    
+    private void processIssueUpdated(Map<String, Object> payload) {
+
+        Jira_Issue__c issue = mapIssuePayloadToRecord(payload, false);
+        upsert issue;
+    }
+    
+    private void processIssueDeleted(Map<String, Object> payload) {
+        
+        Map<String, Object> issueData = (Map<String, Object>)payload.get('issue');
+        String key = (String)issueData.get('key');
+        Jira_Issue__c issue = [SELECT Id FROM Jira_Issue__c WHERE Issue_Key__c = :key];
+        delete issue;
+    }
+
+        //***** JIRA PROJECT METHODS *****/
+
+    private Id getExistingJiraProjectId(String projectKey) {
+
+        Id jiraProjectId = null;
+        List<Jira_Project__c> jiraProjects = [SELECT Id FROM Jira_Project__c WHERE Project_Key__c = :projectKey LIMIT 1];
+        if (!jiraProjects.isEmpty()) {
+            jiraProjectId = jiraProjects.get(0).Id;
+        }
+        return jiraProjectId;
+    }
+    
+    private Jira_Project__c mapProjectPayloadToRecord(Map<String, Object> payload, Boolean isCreate) {
+
+        // Extract the needed values and maps from the payload
+        DateTime jiraTimeStampForSf = convertTimestampField(payload);
+        Map<String, Object> projectData = (Map<String, Object>) payload.get('project');
+
+        // Map the fields that could apply for both a create and update. At a minimum, Last_Updated__c will always have changed
+        Jira_Project__c project = new Jira_Project__c(
+            Name = (String)projectData.get('name'),
+            Project_Name__c = (String)projectData.get('name'),
+            Description__c = (String)projectData.get('self'),
+            Last_Updated__c = jiraTimeStampForSf
+        );
+
+        // Extract the Jira Key and map this and the Id for a create. For an update, try to find the existing SF Id with that Jira Key.
+        String projectKey = (String)projectData.get('key');
+        if (isCreate) {
+            project.Project_Id__c = String.valueOf(projectData.get('id'));
+            project.Project_Key__c = projectKey;
+            project.Created_Date__c = jiraTimeStampForSf;
+        } else {
+            project.Id = getExistingJiraProjectId(projectKey);
+        }
+        return project;
+    }
+    
+    private void processProjectCreated(Map<String, Object> payload) {
+
+        Jira_Project__c project = mapProjectPayloadToRecord(payload, true);
+        insert project;
+    }
+    
+    private void processProjectUpdated(Map<String, Object> payload) {
+
+        Jira_Project__c project = mapProjectPayloadToRecord(payload, false);
+        upsert project;
+    }
+    
+    private void processProjectDeleted(Map<String, Object> payload) {
+
+        Map<String, Object> projectData = (Map<String, Object>)payload.get('project');
+        String key = (String)projectData.get('key');
+        Jira_Project__c project = [SELECT Id FROM Jira_Project__c WHERE Project_Key__c = :key];
+        delete project;
+    }
+
+    private DateTime convertTimestampField(Map<String, Object> payload) {
+
+        Long jiraTimestamp = (Long)payload.get('timestamp');
+        DateTime jiraTimeStampForSf = DateTime.newInstance(jiraTimestamp / 1000);
+        return jiraTimeStampForSf;
     }
 } 

@@ -1,7 +1,7 @@
 /**
  * @description Interface for webhook processors
  * All webhook processors should implement this interface
- * @author Your Name
+ * @author Stephen Church
  */
 public interface IWebhookProcessor {
     
